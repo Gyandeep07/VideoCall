@@ -24,7 +24,10 @@ const PORT = process.env.PORT || 3000;
 const server = createServer(app);
 
 // 🌍 Allowed frontend origins
-const allowedOrigins = [process.env.CLIENT_URL];
+const allowedOrigins = [
+  "http://localhost:5173",   // local dev
+  "https://videocall-client-hyst.onrender.com" // deployed client
+];
 
 // 🔧 Middleware
 app.use(cors({
@@ -38,6 +41,7 @@ app.use(cors({
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
 }));
+app.options("*", cors()); // ✅ handle preflight
 app.use(express.json());
 app.use(cookieParser());
 
@@ -54,7 +58,7 @@ app.get("/ok", (req, res) => {
 const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
-    origin: allowedOrigins[0],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
   },
 });
